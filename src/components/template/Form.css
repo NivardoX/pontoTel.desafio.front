@@ -1,0 +1,116 @@
+/*tbody {
+    position: absolute;
+    left: 0px;
+    width: 0px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    animation: myAnimation 1s ease 1s 3 alternate forwards;
+  }
+  
+  @keyframes myAnimation {
+    100% {
+      left: 70%;
+    }	
+  }
+*/
+
+/* TABLEVIEW */
+.tableview-card {
+  padding: 30px;
+  margin: 5px 5px 25px 5px ;
+  outline: 1px solid  rgba(0, 0, 0, 0.15);  
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+  background-color:rgba(0, 0, 0, 0.05);
+}
+.tableview-table {
+  margin-top: 10px;
+  font-size: 0.9em;
+  min-width: 100%;
+  max-width: 100%;
+  border-radius:  0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+
+@media screen and (max-width:850px) { 
+  .tableview-table-column {
+    width: 100%;
+    overflow-x: visible;
+  }
+}
+.tableview-table thead tr {
+  background-color: rgba(0,0,0, 0.05);
+  color: #000;
+  text-align: left;
+  font-weight: bold;
+  outline: 1px solid rgba(0,0,0, 0.2);
+
+}
+.tableview-table thead th{
+  outline: 1px solid  rgba(0, 0, 0, 0.2);  
+  padding: 12px 15px;
+  text-align: center;
+
+}
+
+.tableview-table td{
+  outline: 1px solid  rgba(0, 0, 0, 0.1);  
+  text-align: center;
+
+  padding: 12px 15px;
+}
+
+
+.tableview-table tbody tr {
+  outline: 1px solid  rgba(0, 0, 0, 0.1);  
+}
+
+
+
+.tableview-table tbody tr:last-of-type {
+  border-bottom: 3px solid rgba(0,0,0, 0.2);
+}
+
+/** IDK pra q serve
+.tableview-table tbody tr.active-row {
+  font-weight: bold;
+  color: #007bff;
+  overflow: auto;
+
+}
+*/
+/* END */
+
+/* TABLELIST */
+.tablelist-table {
+  margin-top: 10px;
+  font-size: 0.9em;
+  min-width: 100%;
+  max-width: 100%;
+  border-radius:  0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.tablelist-table thead tr {
+  background-color: rgba(0,0,0, 0.05);
+  color: #000;
+  text-align: left;
+  font-weight: bold;
+
+}
+.tablelist-table thead th{
+  padding: 12px 15px;
+  text-align: center;
+
+}
+.tablelist-table tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+/* END */
+
+/* Fix itens overlapping modal*/
+.ReactModal__Overlay {
+  z-index: 1000;
+}
