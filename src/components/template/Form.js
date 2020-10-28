@@ -229,6 +229,116 @@ class ButtonCancel extends Component
 
 /*----------------------------------------------------------------------------------------------------*/
 
+class SelectStockField extends Component
+{
+	constructor(props)
+	{
+		super(props);
+
+		this.state = {
+			urlParameters: undefined ,
+			options: this.props.options ? this.props.options: []
+
+		};
+
+		this.handleReceiveOption = this.handleReceiveOption.bind(this);
+		this._isMounted = false;
+	}
+
+	async handleReceiveOption(res)
+	{
+		console.log(res.data.itens)
+		if (res.status === 200) {
+			this._isMounted && this.setState({
+				options: res.data.itens,
+			});
+		}
+	}
+
+	componentDidMount()
+	{
+
+		this._isMounted = true;
+		this._isMounted && !this.props.options && Rest.get(this.props.url, this.props.urlParameters).then(this.handleReceiveOption);
+
+
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
+	}
+
+	concatenarValues(data) {
+		let value = "";
+		let keys = [
+			data.centro_estagio_nome,
+			data.empresa_nome,
+			data.inicio,
+			data.fim,
+			data.contrato_empresa_nome,
+			data.quantidade_vagas,
+			data.curso_nome,
+			data.conhecimento_especifico
+
+		];
+		for (var i=0;i < keys.length ;i++){
+			if(keys[i] !== undefined) {
+				value =  value.concat(keys[i]);
+				if(i!== keys.length - 1 && keys[i+1]!== undefined){
+					value = value.concat(' - ');
+
+				}
+			}
+
+		}
+
+		return String(value);
+	}
+
+	render()
+	{
+		let classValue;
+		let key;
+		if(JSON.stringify(this.state.urlParameters)!== JSON.stringify(this.props.urlParameters)){
+			Rest.get(this.props.url, this.props.urlParameters).then(this.handleReceiveOption);
+			this.setState(({urlParameters: this.props.urlParameters}))
+		}
+
+		if (this.props.errors[this.props.name]) {
+			classValue = "is-invalid form-control";
+		}
+		else {
+			classValue = "form-control";
+		}
+
+		key=1;
+
+
+		const options = this.state.options.map((data) =>
+			<option key={key++} value={data[this.props.value_name?this.props.value_name:this.props.name]}>
+				{(data[this.props.option_name] ? data[this.props.option_name] :(
+					data.nome_fantasia || data.escola || data.nome || data.nome_fantasia || data.name || this.concatenarValues(data)))}
+			</option>
+		);
+
+
+		return (
+			<div className= { "form-group " + (this.props.colsize ? "col-md-" + this.props.colsize : "") }>
+				<label>{ Messages.getMessage(this.props.label) }</label>
+				<select className={ classValue } id={ this.props.name }  name={ this.props.name } disabled={this.props.disabled}
+						required={ this.props.required } value={this.props.value} autoFocus={ this.props.autofocus } onChange={ this.props.onChange }>
+					{ this.props.empty === true ? <option value=""/> : '' }
+					{ options }
+				</select>
+
+				<div className="invalid-feedback">
+					{ this.props.errors[this.props.name] ? this.props.errors[this.props.name] : '' }
+				</div>
+			</div>
+		);
+	}
+}
+
 class SelectField extends Component
 {
 	constructor(props)
@@ -1192,4 +1302,4 @@ class MasterDetails extends Component {
 }
 /*----------------------------------------------------------------------------------------------------*/
 export  { InputInGroup, RememberMeInGroup, ButtonSubmit, ButtonCancel, SelectField, DataList, LoginArea, TextField, Select2Field
-	,TextView, FormColapse, TableView, TableList, InputDate, InputCpf, InputCnpj, InputMoney, InputTime, QrField, MasterDetails};
+	,TextView, FormColapse, TableView, TableList, InputDate, InputCpf, InputCnpj, InputMoney, InputTime, QrField, MasterDetails,SelectStockField};

@@ -2,7 +2,7 @@ import React from 'react';
 import BasePage from '../basePage/BasePage';
 
 import { CardBordered } from '../../components/dashboard/Cards';
-import {Select2Field, SelectField, TableList} from '../../components/template/Form';
+import {Select2Field, SelectField, SelectStockField, TableList} from '../../components/template/Form';
 import MessageService from '../../services/MessageService';
 import { Icons } from '../../iconSet';
 import RestService from '../../services/RestService';
@@ -17,8 +17,7 @@ const Rest = new RestService;
 
 class AdminPanel extends BasePage {
     _isMounted = false;
-    _isMounted2 = false;
-
+    _isFetching = true;
     static defaultProps = {
         urlBase: "company/",
          spinnerCss : {textAlign: 'center',
@@ -38,7 +37,6 @@ class AdminPanel extends BasePage {
 
         }
         this.handleCompanyChange = this.handleCompanyChange.bind(this)
-        this.handleChangeDetails = this.handleChangeDetails.bind(this)
         this.fetchHistoric = this.fetchHistoric.bind(this)
         this.handleInfo = this.handleInfo.bind(this);
         this.handleResponseQuote = this.handleResponseQuote.bind(this);
@@ -51,28 +49,31 @@ class AdminPanel extends BasePage {
     fetchHistoric() {
         Rest.get("/stock/"+this.state.symbol+"/price").then(this.handleResponseQuote)
         return Rest.get(this.props.urlBase+this.state.symbol+"/history");
+
     }
 
     handleCompanyChange(e){
-        console.log(e)
-        this.setState({[e.target.name]: e.target.value});
-        this._isMounted = false;
-        this.fetchHistoric().then(this.handleInfo).then(() => {
-            console.log("acabou")
-            this._isMounted = true;
-            this.forceUpdate()
+        this.setState({[e.target.name]: e.target.value},() =>{
+            this._isMounted = false;
+            this._isFetching = false;
+            this.fetchHistoric().then(this.handleInfo).then(() => {
+                console.log("acabou")
+                this._isMounted = true;
 
-        })
+            })
+        });
+
 
     }
 	componentDidMount(){
         this.interval = setInterval(() => {
             Rest.get("/stock/"+this.state.symbol+"/price").then(this.handleResponseQuote)
             console.log("UPDATING QUOTES")
+            this.forceUpdate()
+
         },5000);
         this.fetchHistoric().then(this.handleInfo)
 
-        this._isMounted = true;
 
     }
     componentWillUnmount() {
@@ -93,28 +94,16 @@ class AdminPanel extends BasePage {
             this.setState({
                 historyData:historyData,
                 info: data.data
-            })
+            },() => {
+                    this._isMounted = true;
+                    this._isFetching = false;
+                this.forceUpdate()}
+                )
+
+
 
         }
     }
-    handleChangeDetails(e) {
-        if (
-            e.target.name === "symbol"
-        ) {
-            console.log(e);
-            let nome = e.target.label;
-            let fieldName = 'empresa_nome';
-            this.setState({
-                item: {
-                    ...this.state.item,
-                    [e.target.name]: e.target.value,
-                    [fieldName]: nome,
-                    fieldErrors: [],
-                },
-            });
-        }
-    }
-
 
 	render()
 	{
@@ -126,7 +115,7 @@ class AdminPanel extends BasePage {
                 <div className="d-auto">
 
                     <FormPage noIcon bold title="page.dashboard.info">
-                        <SelectField
+                        <SelectStockField
                             value={this.state.symbol}
                             empty={true}
                             name="symbol"
@@ -140,12 +129,13 @@ class AdminPanel extends BasePage {
                             urlParameters={{"ROWS_PER_PAGE":100}}
                         />
 
-                        {  this._isMounted?
+                        {  this._isMounted && !this._isFetching?
                             <div className="d-auto">
 
                             <h3>Cotação ao vivo: {this.state.quote}</h3>
-
-                            <StockGraph companyName={this.state.symbol} historyData={this.state.historyData}/>
+                                {!this._isFetching ?
+                                    <StockGraph companyName={this.state.symbol} historyData={this.state.historyData}/> :<div/>
+                                }
                             </div>
 
                             :  <div style={this.props.spinnerCss}>
