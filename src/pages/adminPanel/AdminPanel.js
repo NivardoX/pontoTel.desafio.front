@@ -49,7 +49,7 @@ class AdminPanel extends BasePage {
         }
     }
     fetchHistoric() {
-        Rest.get("/api/stock/"+this.state.symbol+"/details").then(this.handleResponseQuote)
+        Rest.get("/stock/"+this.state.symbol+"/price").then(this.handleResponseQuote)
         return Rest.get(this.props.urlBase+this.state.symbol+"/history");
     }
 
@@ -67,7 +67,7 @@ class AdminPanel extends BasePage {
     }
 	componentDidMount(){
         this.interval = setInterval(() => {
-            Rest.get("/api/stock/"+this.state.symbol+"/details").then(this.handleResponseQuote)
+            Rest.get("/stock/"+this.state.symbol+"/price").then(this.handleResponseQuote)
             console.log("UPDATING QUOTES")
         },5000);
         this.fetchHistoric().then(this.handleInfo)
