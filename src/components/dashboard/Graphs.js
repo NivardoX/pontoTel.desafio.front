@@ -25,6 +25,7 @@ class Pie extends React.Component {
               },
           },
             chart: {
+
               width: 380,
               type: 'pie',
             },
@@ -72,6 +73,15 @@ class StockGraph extends React.Component {
       }],
       options: {
         chart: {
+          animations: {
+            enabled: false,
+            easing: 'easeinout',
+            speed: 800,
+
+            dynamicAnimation: {
+              enabled: false
+            }
+          },
           type: 'area',
           stacked: false,
           height: 350,
@@ -80,6 +90,7 @@ class StockGraph extends React.Component {
             enabled: true,
             autoScaleYaxis: true
           },
+
           toolbar: {
             autoSelected: 'zoom'
           }
